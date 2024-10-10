@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@stripe/stripe-js": "^4.8.0",
+    "@vee-validate/rules": "^4.13.2",
+    "jwt-decode": "^4.0.0",
+    "vee-validate": "^4.13.2"
+  }
+}
