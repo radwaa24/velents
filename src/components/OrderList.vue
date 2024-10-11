@@ -1,6 +1,6 @@
 <template>
-  <div class="p-6 lg:px-20 bg-cyan-950 min-h-screen text-black">
-    <div class="flex justify-between items-center">
+  <div class="p-6 lg:px-20 bg-cyan-950 min-h-[675px] text-black">
+    <div class="flex md:justify-between flex-col md:flex-row items-center">
       <h2 class="text-amber-200 text-3xl font-bold mb-4">Order List</h2>
       <div class="flex mb-4 space-x-4">
         <div>
@@ -10,8 +10,8 @@
             class="mt-1 w-full p-2.5 border rounded-md bg-amber-200"
           >
             <option value="">Status: All</option>
-            <option value="Pending">Pending</option>
-            <option value="Paid">Paid</option>
+            <option value="pending">Pending</option>
+            <option value="paid">Paid</option>
           </select>
         </div>
         <div>
@@ -23,11 +23,19 @@
             class="mt-1 w-full p-2 border rounded-md bg-amber-200"
           />
         </div>
+        <div v-if="selectedDate">
+          <button
+            @click="resetDateFilter"
+            class="mt-1 bg-amber-200 text-black p-2.5 rounded-md"
+          >
+            Reset Date
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- Order Cards -->
-    <div v-if="loading" class="flex items-center justify-center h-screen">
+    <div v-if="loading" class="flex items-center justify-center h-[675px]">
       <div
         class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-amber-200"
       ></div>
@@ -51,24 +59,23 @@
             <div
               class="px-2 p-0.5 rounded-md"
               :class="{
-                '!bg-yellow-500 !text-white ': !order.status, // Red for 'pending'
-                '!bg-green-800 !text-white': order.status, // Green for 'paid'
+                '!bg-yellow-500 !text-white ': order.status == 'pending', // Red for 'pending'
+                '!bg-green-800 !text-white': order.status == 'paid', // Green for 'paid'
               }"
             >
-              {{ order.status ? "Paid" : "Pending" }}
+              {{ order.status == "paid" ? "Paid" : "Pending" }}
             </div>
           </div>
-          <p class="text-gray-600">Product: {{ order.productName }}</p>
-
-          <p class="text-gray-600">Quantity: {{ order.quantity }}</p>
-          <p class="text-gray-600">Price: ${{ formatPrice(order.price) }}</p>
-          <p class="text-gray-600">
+          <p class="text-gray-800">Product: {{ order.productName }}</p>
+          <p class="text-gray-800">Quantity: {{ order.quantity }}</p>
+          <p class="text-gray-800">Price: ${{ formatPrice(order.price) }}</p>
+          <p class="text-gray-800">
             Created at: {{ formatDate(order.created_at) }}
           </p>
 
           <div class="flex w-full justify-end">
             <button
-              v-if="!order.status"
+              v-if="order.status == 'pending'"
               @click="openPaymentModal(order)"
               class="mt-2 bg-cyan-900 text-white p-2 px-4 rounded"
             >
@@ -117,6 +124,7 @@
       :isOpen="modalOpen"
       :order="selectedOrder"
       @close="modalOpen = false"
+      :updateOrder="updateOrder"
     />
   </div>
 </template>
@@ -124,7 +132,9 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import PaymentModal from "./PaymentModal.vue";
+import { useToast } from "vue-toastification";
 
+const toast = useToast();
 const orders = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 6;
@@ -133,8 +143,8 @@ const selectedDate = ref("");
 const selectedOrder = ref(null);
 const modalOpen = ref(false);
 const loading = ref(false);
-// Fetch orders from API
-onMounted(async () => {
+
+const getOrders = async () => {
   loading.value = true;
   try {
     const response = await fetch(
@@ -148,8 +158,38 @@ onMounted(async () => {
     loading.value = false;
     orders.value = [];
   }
+};
+
+// Call this method in onMounted
+onMounted(() => {
+  getOrders(); // Fetch orders on component mount
 });
 
+const updateOrder = async (orderId, status) => {
+  try {
+    const response = await fetch(
+      `https://6707d2988e86a8d9e42d1397.mockapi.io/order/v1/orders/${orderId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status }), // Only send the status for update
+      }
+    );
+
+    if (response.ok) {
+      const updatedOrder = await response.json();
+      getOrders();
+      toast.success("Order status updated to 'paid' successfully!");
+    } else {
+      toast.error("Failed to update order status. Please try again.");
+    }
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    toast.error("An error occurred while updating the order status.");
+  }
+};
 // Format price to two decimal places
 function formatPrice(price) {
   return typeof price === "number" ? price.toFixed(2) : "0.00";
@@ -168,7 +208,7 @@ const filteredOrdersBeforePagination = computed(() => {
 
   if (selectedStatus.value) {
     filtered = filtered.filter((order) => {
-      return selectedStatus.value === "Paid" ? order.status : !order.status;
+      return order.status === selectedStatus.value;
     });
   }
 
@@ -189,6 +229,10 @@ const filteredOrders = computed(() => {
   const end = currentPage.value * itemsPerPage;
   return filteredOrdersBeforePagination.value.slice(start, end);
 });
+// Reset the date filter
+function resetDateFilter() {
+  selectedDate.value = ""; // Clears the date filter
+}
 
 // Total pages based on filtered orders before pagination
 const totalPages = computed(() => {
@@ -214,7 +258,3 @@ function openPaymentModal(order) {
   modalOpen.value = true;
 }
 </script>
-
-<style scoped>
-/* Additional styles can be added here if needed */
-</style>

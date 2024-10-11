@@ -6,19 +6,16 @@
     "
   >
     <div
-      class=" bg-amber-50 bg-opacity-90 p-8 rounded-lg shadow-md w-full max-w-lg"
+      class="bg-amber-50 mx-10 md:mx-0 bg-opacity-90 p-8 rounded-lg shadow-md w-full max-w-lg"
     >
       <h2 class="text-green-900 text-2xl font-bold text-center mb-6">Sign In</h2>
       <Form
         @submit="handleLogin"
-        v-slot="{ errors}"
+        v-slot="{ errors }"
         class="space-y-4"
       >
         <div>
-          <label for="email" class="block text-sm font-medium text-green-950"
-            >Email</label
-          >
-          {{ userEmail }}
+          <label for="email" class="block text-sm font-medium text-green-950">Email</label>
           <Field
             name="email"
             type="email"
@@ -30,9 +27,7 @@
           <ErrorMessage name="email" class="text-red-500 text-sm mt-1" />
         </div>
         <div>
-          <label for="password" class="block text-sm font-medium text-green-950"
-            >Password</label
-          >
+          <label for="password" class="block text-sm font-medium text-green-950">Password</label>
           <Field
             name="password"
             type="password"
@@ -46,42 +41,53 @@
         <button
           :disabled="!userEmail || !password || errors.length"
           type="submit"
-          class="w-full py-2 px-4 bg-green-900 text-white rounded-md hover:green-950 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="w-full py-2 px-4 bg-green-900 text-white rounded-md hover:bg-green-950 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Sign In
         </button>
-        <div v-if="error" class="text-red-500 text-center mt-4">
-          {{ error }}
-        </div>
       </Form>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { Form, Field, ErrorMessage, defineRule } from "vee-validate";
 import { required, email, min } from "@vee-validate/rules";
-import { useAuth } from "@/composables/useAuth";
+import { useToast } from "vue-toastification";
 
-// Define the rules
 defineRule("required", required);
 defineRule("email", email);
 defineRule("min", min);
-const { login } = useAuth();
+
 const router = useRouter();
-const error = ref(null);
+const toast = useToast();
 const userEmail = ref("");
 const password = ref("");
 
-// Function to handle form submission
 async function handleLogin() {
-  await login({ email: userEmail.value, password: password.value });
-  router.push("/orders/list"); // Redirect to order list after successful login
+  try {
+    const response = await fetch('https://6707d2988e86a8d9e42d1397.mockapi.io/order/v1/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: userEmail.value, password: password.value }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Login failed: ' + response.statusText);
+    }
+
+    const data = await response.json();
+    if (data.token) {
+      localStorage.setItem('jwt_token', data.token);
+      toast.success('Login successful!');
+      router.push('/orders/list');
+    } else {
+      toast.error('Login failed: No token received');
+    }
+  } catch (error) {
+    toast.error(error.message);
+  }
 }
 </script>
-
-<style scoped>
-/* No extra styling needed, as we are using Tailwind CSS */
-</style>
