@@ -29,7 +29,7 @@
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 
-const toast = useToast(); // Initialize toast
+const toast = useToast(); 
 const router = useRouter();
 
 function logout() {
@@ -39,6 +39,3 @@ function logout() {
 }
 </script>
 
-<style scoped>
-/* Add any additional styles if necessary */
-</style>

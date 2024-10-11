@@ -7,16 +7,13 @@
     <div class="bg-white p-6 rounded-lg w-full lg:max-w-2xl mx-10 shadow-lg relative">
       <h3 class="text-cyan-950 text-xl font-semibold mb-4">Pay for Order: #{{ order.id }}</h3>
 
-      <!-- VeeValidate Form for Payment -->
       <Form @submit="handlePayment" v-slot="{ errors }">
-        <!-- Card Information (using Stripe Elements) -->
         <div class="mb-4">
           <label for="card-element" class="block text-sm font-medium text-cyan-950">Card Information</label>
           <div id="card-element" class="mt-2 p-2 border border-gray-300 rounded"></div>
           <span v-if="errors.cardElement" class="text-red-500 text-sm">{{ errors.cardElement }}</span>
         </div>
 
-        <!-- Email Validation -->
         <div class="mb-4">
           <Field
             name="email"
@@ -57,34 +54,24 @@ const stripePromise = loadStripe('pk_test_51Q8RgS2Kh2qpE6NatZ00YDbxegTNGfoKPGmJ1
 let cardElement = null;
 let stripe = null;
 
-// Props
 const props = defineProps({
   isOpen: Boolean,
   order: Object,
-  updateOrder: Function, // Add the updateOrder prop
+  updateOrder: Function, 
 });
 
 // Emit event for closing the modal
 const emit = defineEmits(['close']);
-
-// Toast setup
 const toast = useToast();
-
-// Modal State
 const paymentStatus = ref('');
 const paymentMessage = ref('');
-
-// Vee Validate Rules
 defineRule('required', required);
 defineRule('email', email);
-
-// Configure Vee Validate to show validation messages on blur
 configure({
   validateOnInput: false,
   validateOnBlur: true,
 });
 
-// Close modal and reset states
 const closeModal = () => {
   emit('close');
   paymentStatus.value = '';
@@ -94,7 +81,6 @@ const closeModal = () => {
   }
 };
 
-// Initialize Stripe elements on mount
 onMounted(async () => {
   stripe = await stripePromise;
   const elements = stripe.elements();
@@ -142,7 +128,7 @@ const handlePayment = async (values) => {
       paymentStatus.value = 'success';
       paymentMessage.value = 'Payment successful! (simulated)';
       toast.success('Payment completed successfully (simulated).');
-      closeModal(); // Close the modal on success
+      closeModal(); 
     }
   } catch (error) {
     paymentStatus.value = 'error';
@@ -152,6 +138,3 @@ const handlePayment = async (values) => {
 };
 </script>
 
-<style scoped>
-/* Add styles for the modal */
-</style>

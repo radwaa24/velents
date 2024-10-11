@@ -59,8 +59,8 @@
             <div
               class="px-2 p-0.5 rounded-md"
               :class="{
-                '!bg-yellow-500 !text-white ': order.status == 'pending', // Red for 'pending'
-                '!bg-green-800 !text-white': order.status == 'paid', // Green for 'paid'
+                '!bg-yellow-500 !text-white ': order.status == 'pending',
+                '!bg-green-800 !text-white': order.status == 'paid',
               }"
             >
               {{ order.status == "paid" ? "Paid" : "Pending" }}
@@ -160,9 +160,9 @@ const getOrders = async () => {
   }
 };
 
-// Call this method in onMounted
+
 onMounted(() => {
-  getOrders(); // Fetch orders on component mount
+  getOrders();
 });
 
 const updateOrder = async (orderId, status) => {
@@ -195,14 +195,12 @@ function formatPrice(price) {
   return typeof price === "number" ? price.toFixed(2) : "0.00";
 }
 
-// Format the created_at date to MM-DD-YYYY
 function formatDate(dateString) {
   const date = new Date(dateString);
   const options = { year: "numeric", month: "2-digit", day: "2-digit" };
   return date.toLocaleDateString("en-US", options).replace(/\//g, "-");
 }
 
-// Filter orders based on selected status and date
 const filteredOrdersBeforePagination = computed(() => {
   let filtered = orders.value;
 
