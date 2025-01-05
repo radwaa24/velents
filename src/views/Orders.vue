@@ -8,9 +8,7 @@
             class="font-semibold hover:text-black"
             >Create Order</router-link
           >
-          <router-link
-            to="/orders/list"
-            class="font-semibold hover:text-black"
+          <router-link to="/orders/list" class="font-semibold hover:text-black"
             >Orders list</router-link
           >
         </div>
@@ -29,7 +27,7 @@
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 
-const toast = useToast(); 
+const toast = useToast();
 const router = useRouter();
 
 function logout() {
@@ -38,4 +36,3 @@ function logout() {
   toast.success("Log out successful!");
 }
 </script>
-

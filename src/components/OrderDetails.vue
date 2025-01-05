@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="loading"
-    class="flex items-center justify-center bg-cyan-950 h-[675px]"
+    class="flex items-center justify-center bg-cyan-950 h-screen"
   >
     <div
       class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-amber-200"
@@ -9,7 +9,7 @@
   </div>
   <div
     v-else
-    class="p-6 lg:px-20 bg-gradient-to-b bg-cyan-950 min-h-[675px] text-black"
+    class="p-6 lg:px-20 bg-gradient-to-b bg-cyan-950 min-h-screen text-black"
   >
     <h2 class="text-amber-200 md:text-3xl text-lg font-bold mb-4">
       Order Details
@@ -96,7 +96,7 @@
       </div>
 
       <div v-else class="bg-white shadow rounded-lg p-6 border border-gray-300">
-        <div class="flex justify-between items-center">
+        <div class="flex justify-between mb-4 items-center">
           <router-link
             class="font-semibold text-lg text-cyan-900 hover:text-cyan-950"
             :to="{ path: `/orders/${order.id}` }"
@@ -114,11 +114,17 @@
             {{ order.status == "paid" ? "Paid" : "Pending" }}
           </div>
         </div>
-        <p class="text-gray-800">Product Name: {{ order.productName }}</p>
-        <p class="text-gray-800">Quantity: {{ order.quantity }}</p>
-        <p class="text-gray-800">Price: ${{ formatPrice(order.price) }}</p>
-        <p class="text-gray-800">
-          Created At: {{ formatDate(order.created_at) }}
+        <p class="text-gray-800 font-medium mb-2">
+          Product Name: <span>{{ order.productName }}</span>
+        </p>
+        <p class="text-gray-800 font-medium mb-2">
+          Quantity: <span>{{ order.quantity }}</span>
+        </p>
+        <p class="text-gray-800 font-medium mb-2">
+          Price: <span>${{ formatPrice(order.price) }}</span>
+        </p>
+        <p class="text-gray-800 font-medium mb-2">
+          Created At: <span>{{ formatDate(order.created_at) }}</span>
         </p>
         <div class="flex justify-end gap-x-4">
           <button

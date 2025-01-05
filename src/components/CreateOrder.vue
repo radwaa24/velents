@@ -1,5 +1,5 @@
 <template>
-  <div class="px-5 flex items-center justify-center min-h-[675px] bg-cyan-950">
+  <div class="px-5 flex items-center justify-center min-h-screen bg-cyan-950">
     <div class="bg-amber-100 p-8 rounded-lg shadow-lg w-full max-w-3xl">
       <h2 class="text-cyan-900 text-3xl font-bold text-center mb-6">
         Create Order

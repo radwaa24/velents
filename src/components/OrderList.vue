@@ -1,6 +1,8 @@
 <template>
-  <div class="p-6 lg:px-20 bg-cyan-950 min-h-[675px] text-black">
-    <div class="flex md:justify-between flex-col md:flex-row items-center">
+  <div class="p-6 lg:px-20 bg-cyan-950 min-h-screen text-black">
+    <div
+      class="flex md:justify-between mt-20 flex-col md:flex-row items-center"
+    >
       <h2 class="text-amber-200 text-3xl font-bold mb-4">Order List</h2>
       <div class="flex mb-4 space-x-4">
         <div>
@@ -50,7 +52,7 @@
           :key="order.id"
           class="bg-amber-50 bg-opacity-90 shadow rounded-lg p-4"
         >
-          <div class="flex justify-between items-center">
+          <div class="flex justify-between items-center mb-3">
             <router-link
               class="font-semibold text-lg text-cyan-900 hover:text-cyan-950"
               :to="{ path: `/orders/${order.id}` }"
@@ -66,11 +68,17 @@
               {{ order.status == "paid" ? "Paid" : "Pending" }}
             </div>
           </div>
-          <p class="text-gray-800">Product: {{ order.productName }}</p>
-          <p class="text-gray-800">Quantity: {{ order.quantity }}</p>
-          <p class="text-gray-800">Price: ${{ formatPrice(order.price) }}</p>
-          <p class="text-gray-800">
-            Created at: {{ formatDate(order.created_at) }}
+          <p class="text-gray-800 font-medium mb-2">
+            Product Name: <span>{{ order.productName }}</span>
+          </p>
+          <p class="text-gray-800 font-medium mb-2">
+            Quantity: <span>{{ order.quantity }}</span>
+          </p>
+          <p class="text-gray-800 font-medium mb-2">
+            Price: <span>${{ formatPrice(order.price) }}</span>
+          </p>
+          <p class="text-gray-800 font-medium mb-2">
+            Created At: <span>{{ formatDate(order.created_at) }}</span>
           </p>
 
           <div class="flex w-full justify-end">
@@ -159,7 +167,6 @@ const getOrders = async () => {
     orders.value = [];
   }
 };
-
 
 onMounted(() => {
   getOrders();
