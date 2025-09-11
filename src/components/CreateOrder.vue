@@ -105,12 +105,12 @@ const message = ref(null);
 const toast = useToast();
 
 async function onSubmit(values, { resetForm }) {
-  const token = localStorage.getItem("token");
-  await fetch("https://6707d2988e86a8d9e42d1397.mockapi.io/order/v1/orders", {
+  // const token = localStorage.getItem("token");
+  await fetch("http://localhost:3000/orders", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      // Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
       productName: values.productName,

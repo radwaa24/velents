@@ -12,7 +12,10 @@
   "dependencies": {
     "@stripe/stripe-js": "^4.8.0",
     "@vee-validate/rules": "^4.13.2",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
     "jwt-decode": "^4.0.0",
+    "mongoose": "^8.18.1",
     "pinia": "^2.1.7",
     "vee-validate": "^4.13.2",
     "vue": "^3.4.29",
@@ -30,5 +33,9 @@
     "vite": "^5.3.1",
     "vite-plugin-vue-devtools": "^7.3.1",
     "vitest": "^1.6.0"
-  }
+  },
+  "description": "This template should help get you started developing with Vue 3 in Vite.",
+  "main": "postcss.config.js",
+  "author": "",
+  "license": "ISC"
 }

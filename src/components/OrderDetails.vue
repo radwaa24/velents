@@ -177,9 +177,7 @@ const isEditing = ref(false);
 
 onMounted(async () => {
   loading.value = true;
-  await fetch(
-    `https://6707d2988e86a8d9e42d1397.mockapi.io/order/v1/orders/${orderId}`
-  )
+  await fetch(`http://localhost:3000/orders/${orderId}`)
     .then((response) => response.json())
     .then((data) => {
       order.value = data;
@@ -192,16 +190,13 @@ onMounted(async () => {
 });
 
 async function updateOrder() {
-  const response = await fetch(
-    `https://6707d2988e86a8d9e42d1397.mockapi.io/order/v1/orders/${orderId}`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(order.value),
-    }
-  );
+  const response = await fetch(`http://localhost:3000/orders/${orderId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(order.value),
+  });
 
   if (response.ok) {
     const updatedOrder = await response.json();
@@ -214,16 +209,13 @@ async function updateOrder() {
 
 async function updateOrderStatus() {
   const updatedOrder = { ...order.value, status: "paid" };
-  const response = await fetch(
-    `https://6707d2988e86a8d9e42d1397.mockapi.io/order/v1/orders/${orderId}`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedOrder),
-    }
-  );
+  const response = await fetch(`http://localhost:3000/orders/${orderId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatedOrder),
+  });
 
   if (response.ok) {
     const result = await response.json();

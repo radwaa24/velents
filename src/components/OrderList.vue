@@ -155,9 +155,7 @@ const loading = ref(false);
 const getOrders = async () => {
   loading.value = true;
   try {
-    const response = await fetch(
-      "https://6707d2988e86a8d9e42d1397.mockapi.io/order/v1/orders"
-    );
+    const response = await fetch("http://localhost:3000/orders");
     const data = await response.json();
     orders.value = Array.isArray(data) ? data : [];
     loading.value = false;
@@ -174,16 +172,13 @@ onMounted(() => {
 
 const updateOrder = async (orderId, status) => {
   try {
-    const response = await fetch(
-      `https://6707d2988e86a8d9e42d1397.mockapi.io/order/v1/orders/${orderId}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status }), // Only send the status for update
-      }
-    );
+    const response = await fetch(`http://localhost:3000/orders/${orderId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status }), // Only send the status for update
+    });
 
     if (response.ok) {
       const updatedOrder = await response.json();
