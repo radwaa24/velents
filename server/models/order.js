@@ -1,13 +1,10 @@
 import mongoose from "mongoose";
 
-const orderSchema = new mongoose.Schema({
+const OrderSchema = new mongoose.Schema({
   productName: { type: String, required: true },
   quantity: { type: Number, required: true },
-  // user: { type: String, required: true },
   price: { type: Number, required: true },
-  status: { type: String, default: false },
+  status: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 });
-
-const Order = mongoose.model("Order", orderSchema);
-export default Order;
+export default mongoose.models.order || mongoose.model("order", OrderSchema);
